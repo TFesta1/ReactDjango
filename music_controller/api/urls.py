@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import main
+from .views import RoomView
+
 
 urlpatterns = [
-    path('', main)
+    path('room', RoomView.as_view())
 ]
 
 
@@ -15,3 +16,14 @@ urlpatterns = [
 
 # Running server
 # python .\manage.py runserver
+
+# 16:17
+"""
+Errors and solutions:
+Error: No such room _
+Solution: python .\manage.py makemigrations and python .\manage.py migrate
+
+Tips:
+
+
+"""
