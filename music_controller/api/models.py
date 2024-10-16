@@ -23,4 +23,3 @@ class Room(models.Model): #From DJango documentation
 
     # def is_host ...
     # Fat models, thin views
-
