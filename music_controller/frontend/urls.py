@@ -3,6 +3,8 @@ from .views import index
 # from api.views import main
 
 urlpatterns = [
-    path('', index)
+    path('', index),
+    path('join', index),
+    path('create', index)
     # path('', main)
 ]
