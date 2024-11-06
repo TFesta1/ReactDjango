@@ -79,3 +79,23 @@ class UserInRoom(APIView):
             'code': self.request.session.get('room_code') #key for returning room code
         }
         return JsonResponse(data, status=status.HTTP_200_OK) #py dict to serialize to JSON, send it to request
+    
+class LeaveRoom(APIView):
+    def post(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key): #Checks if current user has active Session (remembering login)
+            self.request.session.create()
+
+        if 'room_code' in self.request.session:
+            self.request.session.pop('room_code') #remove this from the user session
+            host_id = self.request.session.session_key
+            print(f"host_id {host_id}")
+            #if this is the host, we need to close the room
+            room_results = Room.objects.filter(host=host_id)
+            print(f"room_results {room_results}")
+            if len(room_results) > 0:
+                room = room_results[0]
+                room.delete() 
+        else:
+            print(f"No room in session {self.request.session}")
+        
+        return Response({'Message': 'Success'}, status=status.HTTP_200_OK)
