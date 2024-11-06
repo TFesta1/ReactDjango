@@ -38,7 +38,9 @@ const HomePage = () => {
     </Grid>
   );
 
-  return roomCode ? <Navigate to={`/room/${roomCode}`} /> : renderHomePage();
+  //   return roomCode ? <Navigate to={`/room/${roomCode}`} /> : renderHomePage();
+  //   return roomCode ? renderHomePage() : renderHomePage();
+  return renderHomePage();
 };
 
 export default HomePage;
