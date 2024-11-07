@@ -1,6 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Grid, Button, Typography } from "@material-ui/core";
+import CreateRoomPage from "./CreateRoomPage";
 
 // Class based component
 // export default class Room extends Component {
@@ -34,7 +35,51 @@ function Room() {
     votesToSkip: 2,
     guestCanPause: false,
     isHost: false,
+    showSettings: false,
   });
+
+  function updateShowSettings(value) {
+    setState({ showSettings: value });
+  }
+
+  function renderSettings() {
+    return (
+      <Grid container spacing={1}>
+        <Grid item xs={12} align="center">
+          <CreateRoomPage
+            update={true}
+            votesToSkip={state.votesToSkip}
+            guestCanPause={state.guestCanPause}
+            roomCode={roomCode}
+            updateCallBack={() => {}}
+          />
+        </Grid>
+        <Grid item xs={12} align="center">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => updateShowSettings(false)}
+          >
+            Close
+          </Button>
+        </Grid>
+      </Grid>
+    );
+  }
+
+  function renderSettingsButton() {
+    return (
+      <Grid item xs={12} align="center">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => updateShowSettings(true)}
+        >
+          Settings
+        </Button>
+      </Grid>
+    );
+  }
 
   const getRoomDetails = () => {
     fetch("/api/get-room" + "?code=" + roomCode)
@@ -68,6 +113,9 @@ function Room() {
     });
   };
 
+  if (state.showSettings) {
+    return renderSettings();
+  }
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} align="center">
@@ -90,6 +138,7 @@ function Room() {
           Host: {state.isHost.toString()}
         </Typography>
       </Grid>
+      {state.isHost ? renderSettingsButton() : null}
       <Grid item xs={12} align="center">
         <Button
           color="secondary"
