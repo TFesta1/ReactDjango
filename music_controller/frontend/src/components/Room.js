@@ -42,23 +42,49 @@ function Room() {
     setState({ showSettings: value });
   }
 
+  const getRoomDetails = () => {
+    fetch("/api/get-room" + "?code=" + roomCode)
+      .then((response) => {
+        if (!response.ok) {
+          navigate("/");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setState({
+          votesToSkip: data.votes_to_skip,
+          guestCanPause: data.guest_can_pause,
+          isHost: data.is_host,
+        });
+      });
+  };
+
+  const localCallBackProp = () => {
+    getRoomDetails();
+    updateShowSettings(false);
+  };
+
+  useEffect(() => {
+    getRoomDetails();
+  }, []);
+
   function renderSettings() {
     return (
       <Grid container spacing={1}>
         <Grid item xs={12} align="center">
           <CreateRoomPage
-            update={true}
-            votesToSkip={state.votesToSkip}
-            guestCanPause={state.guestCanPause}
-            roomCode={roomCode}
-            updateCallBack={() => {}}
+            updateProp={true}
+            votesToSkipProp={state.votesToSkip}
+            guestCanPauseProp={state.guestCanPause}
+            roomCodeProp={roomCode}
+            updateCallbackProp={getRoomDetails}
           />
         </Grid>
         <Grid item xs={12} align="center">
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => updateShowSettings(false)}
+            onClick={() => localCallBackProp}
           >
             Close
           </Button>
@@ -80,23 +106,6 @@ function Room() {
       </Grid>
     );
   }
-
-  const getRoomDetails = () => {
-    fetch("/api/get-room" + "?code=" + roomCode)
-      .then((response) => {
-        if (!response.ok) {
-          navigate("/");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setState({
-          votesToSkip: data.votes_to_skip,
-          guestCanPause: data.guest_can_pause,
-          isHost: data.is_host,
-        });
-      });
-  };
 
   useEffect(() => {
     getRoomDetails();
