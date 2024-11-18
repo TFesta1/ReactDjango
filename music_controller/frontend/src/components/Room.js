@@ -36,6 +36,7 @@ function Room() {
     guestCanPause: false,
     isHost: false,
     showSettings: false,
+    spotifyAuthenticated: false,
   });
 
   function updateShowSettings(value) {
@@ -56,6 +57,10 @@ function Room() {
           guestCanPause: data.guest_can_pause,
           isHost: data.is_host,
         });
+        console.log(`isHost: ${state.isHost}`);
+        if (state.isHost) {
+          authenticateSptoify();
+        }
       });
   };
 
@@ -110,6 +115,21 @@ function Room() {
   useEffect(() => {
     getRoomDetails();
   }, [roomCode]);
+
+  function authenticateSptoify() {
+    fetch("/spotify/is-authenticated")
+      .then((response) => response.json())
+      .then((data) => {
+        setState({ spotifyAuthenticated: data.status });
+        if (!data.status) {
+          fetch("/spotify/get-auth-url")
+            .then((response) => response.json())
+            .then((data) => {
+              window.location.replace(data.url);
+            });
+        }
+      });
+  }
 
   const leaveButtonPressed = () => {
     const requestOptions = {
